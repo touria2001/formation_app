@@ -8,7 +8,7 @@ import {
   setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
-import { filter, from, map, Observable, of, switchMap } from 'rxjs';
+import {  from,  Observable,} from 'rxjs';
 import { ProfileUser } from '../modals/user-profil';
 import { AuthService } from './auth.service';
 @Injectable({
