@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.page.html',
@@ -36,16 +37,16 @@ export class SignInPage implements OnInit {
     });
   }
   async register() {
-    const loading = await this.loadingController.create();
-    await loading.present();
-    const user = await this.authService.register(this.credentials.value);
-    await loading.dismiss();
+    // const loading = await this.loadingController.create();
+    // await loading.present();
+    // const user = await this.authService.register(this.credentials.value);
+    // await loading.dismiss();
 
-    if (user) {
-      this.router.navigateByUrl('/home', { replaceUrl: true });
-    } else {
-      this.showAlert('l\'inscription a été échoué', 'Veuillez essayer à nouveau!');
-    }
+    // if (user) {
+    //   this.router.navigateByUrl('/home', { replaceUrl: true });
+    // } else {
+    //   this.showAlert('l\'inscription a été échoué', 'Veuillez réssayer!');
+    // }
   }
 
 

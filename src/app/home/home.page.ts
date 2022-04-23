@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, LoadingController, ModalController } from '@ionic/angular';
-import { identity } from 'rxjs';
-import { ModalPage } from '../modal/modal.page';
-import { AuthService } from '../services/auth.service';
-import { DataService } from '../services/data.service';
-//import { AvatarService } from '../services/avatar.service';
+import { ModalController } from '@ionic/angular';
+import { AddNewTaskPage } from '../add-new-task/add-new-task.page';
+import { FireserviceService } from '../fireservice.service';
 
 @Component({
   selector: 'app-home',
@@ -13,34 +10,71 @@ import { DataService } from '../services/data.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  formations = [];
 
-  constructor(
-    //  private avatarService: AvatarService,
-    private authService: AuthService,
-    private router: Router,
-    private loadingController: LoadingController,
-    private alertController: AlertController,
-    private dataService: DataService,
-    private modalCtrl: ModalController
-  ) {
-    this.dataService.getFormations().subscribe(res => {
-      console.log(res);
-      this.formations = res;
-    })
-  }
-  async logout() {
-    await this.authService.logout();
-    this.router.navigateByUrl('/', { replaceUrl: true });
-  }
-  async openFormation(formation) {
+  formationlist:any
+//   todoList = [{
+//     itemName: 'Coding',
+//     itemDueDate: '13-05-21',
+//     itemPriority: 'high',
+//     itemCategory: 'Work'
+//   },
+//   {
+//     itemName: 'Design',
+//     itemDueDate: '13-10-21',
+//     itemPriority: 'low',
+//     itemCategory: 'Personal'
+//   },
+//   {
+//     itemName: 'Spring',
+//     itemDueDate: '14-05-21',
+//     itemPriority: 'middle',
+//     itemCategory: 'Personal'
+//   }
+// ]
+
+  today: number = Date.now()
+
+
+
+  async addNewItem() {
     const modal = await this.modalCtrl.create({
-      component: ModalPage,
-      componentProps: { id: formation.id },
-      breakpoints: [0, 0.5, 0.8],
-      initialBreakpoint: 0.5
-    });
-    modal.present();
+      component: AddNewTaskPage,
+    })
+    modal.onDidDismiss().then(newTaskObj =>(
+     this.formationlist.push(newTaskObj.data)
+    ))
+    return await modal.present()
   }
+  
+  delete(index){
+    this.formationlist.splice(index, 1)
+    console.log(this.formationlist);
+  }
+ 
+  constructor(
+    public modalCtrl:ModalController,
+    public fireService:FireserviceService,
+    public router:Router) {
+    
+       this.fireService.getMarker().subscribe(res => {
+        this.formationlist = res.map(e => {
+        return {
+          docid: e.payload.doc.id,
+          itemName: e.payload.doc.data()["itemName"],
+          itemCategory: e.payload.doc.data()["itemCategory"],
+          itemPriority: e.payload.doc.data()["itemPriority"],
+          itemDueDate: e.payload.doc.data()["itemDueDate"]
+        }
+        }) 
+        console.log(this.formationlist);
 
+      },(err:any) => {
+        console.log(err)
+      })
+    
+    }
+
+    showDetails(docid){
+      this.router.navigateByUrl('details/' + docid);
+    }
 }

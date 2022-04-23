@@ -1,10 +1,11 @@
 export interface ProfileUser {
-    uid: string;
-    photoURL?:string;
+    
+   password?:string;
     email?:string;
     nom?:string;
     prenom?:string;
-    age?:number;
+    age?:string;
     etablissement?:string;
     specialite?:string;
+    reserv?:[]; 
 }

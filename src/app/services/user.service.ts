@@ -17,12 +17,12 @@ import { AuthService } from './auth.service';
 export class UserService {
 
   constructor(private firestore: Firestore) { }
-  addUser(user: ProfileUser): Observable<void> {
-    const ref = doc(this.firestore, 'users', user.uid);
-    return from(setDoc(ref, user));
-  }
-  updateUser(user: ProfileUser): Observable<void> {
-    const ref = doc(this.firestore, 'users', user.uid);
-    return from(updateDoc(ref, { ...user }));
-  }
+  // addUser(user: ProfileUser): Observable<void> {
+  //   const ref = doc(this.firestore, 'users', user.uid);
+  //   return from(setDoc(ref, user));
+  // }
+  // updateUser(user: ProfileUser): Observable<void> {
+  //   const ref = doc(this.firestore, 'users', user.uid);
+  //   return from(updateDoc(ref, { ...user }));
+  // }
 }

@@ -1,9 +1,42 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>sign up</ion-title>
+    <ion-title>sign in</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
+  <form [formGroup]="infoGeneral" (ngSubmit)="register()">
+
+<ion-item fill="solid" class="ion-margin-bottom">
+  <ion-input type="text" placeholder="prenom" formControlName="prenom"></ion-input>
+ </ion-item>
+
+ <ion-item fill="solid" class="ion-margin-bottom">
+  <ion-input type="text" placeholder="nom" formControlName="nom"></ion-input>
+ </ion-item>
+
+ <ion-item fill="solid" class="ion-margin-bottom">
+  <ion-input type="text" placeholder="établissement" formControlName="etablissement"></ion-input>
+ </ion-item>
+
+ <ion-item fill="solid" class="ion-margin-bottom">
+  <ion-input type="text" placeholder="spécialité" formControlName="specialite"></ion-input>
+ </ion-item>
+
+
+
+ <ion-item fill="solid" class="ion-margin-bottom">
+  <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
+  <ion-note slot="error" *ngIf="(email.dirty || email.touched) && email.errors">Email n'est pas valide</ion-note>
+</ion-item>
+
+<ion-item fill="solid" class="ion-margin-bottom">
+  <ion-input type="password" placeholder="Mot de passe" formControlName="password" formControlName="password"></ion-input>
+  <ion-note slot="error" *ngIf="(password.dirty || password.touched) && password.errors">Le mot de passe doit contenir au minimum 6 caractères</ion-note>
+</ion-item>
+<ion-button expand="full" type="submit" [disabled]="!infoGeneral.valid">Se connecter</ion-button>
+
+
+  </form>
 
 </ion-content>

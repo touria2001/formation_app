@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore , collectionData, doc, docData, addDoc , collection} from '@angular/fire/firestore';
-import { deleteDoc, updateDoc } from '@firebase/firestore';
+import { deleteDoc, updateDoc, FieldValue } from '@firebase/firestore';
 
 import { Observable } from 'rxjs';
 
@@ -19,6 +19,7 @@ export interface Formation {
 export class DataService {
 
   constructor(private firestore: Firestore) { }
+  
   getFormations(): Observable<Formation[]>{
     const formationsRef = collection(this.firestore, 'formations');
     return collectionData(formationsRef, {idField: 'id'}) as Observable<Formation[]> ;
