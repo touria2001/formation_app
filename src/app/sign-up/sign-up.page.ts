@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AlertController, LoadingController } from '@ionic/angular';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
-import { ProfileUser } from '../modals/user-profil';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ProfilUser } from '../models/profil-user';
+import { AlertController } from '@ionic/angular';
+import { Storage } from '@ionic/storage-angular';
+
 
 @Component({
   selector: 'app-sign-up',
@@ -11,18 +13,19 @@ import { ProfileUser } from '../modals/user-profil';
   styleUrls: ['./sign-up.page.scss'],
 })
 export class SignUpPage implements OnInit {
-
   infoGeneral: FormGroup;
- userP: ProfileUser;
-
+  userP: ProfilUser;
+  public emaill:any;
+  public passwordd:any;
+  public namee:any;
   constructor(
+    public router:Router,
+    public authService: AuthService,
     private fb: FormBuilder,
-    private loadingController: LoadingController,
     private alertController: AlertController,
-    private authService: AuthService,
-    private router: Router
+    private  storage:Storage
+   
   ) { }
-
   get email() {
     return this.infoGeneral.get('email');
   }
@@ -42,37 +45,47 @@ export class SignUpPage implements OnInit {
   get nom() {
     return this.infoGeneral.get('nom');
   }
-  
- 
+  signup(){ 
+    this.authService.signup(this.infoGeneral.value).then(res=>{
+
+      if(res.user.uid){
+        this.storage.set('idCurrentUser', res.user.uid);
+
+        let data = {        
+          email:  this.infoGeneral.controls['email'].value,
+          password:this.infoGeneral.controls['password'].value,
+          prenom:this.infoGeneral.controls['prenom'].value,
+          nom: this.infoGeneral.controls['nom'].value,
+          uid:res.user.uid,
+          etablissement: this.infoGeneral.controls['etablissement'].value,
+         specialite: this.infoGeneral.controls['specialite'].value,
+        }
+        this.authService.complementSignUp(data).then(res=>{
+             this.router.navigateByUrl('/home', { replaceUrl: true });
+
+        },err=>{
+    this.showAlert('l\'inscription a été échoué', 'Veuillez réssayer!');
+        })
+      }
+    },err=>{
+    this.showAlert('l\'inscription a été échoué', 'Veuillez réssayer!');
+
+      console.log(err);
+    })
+  }
+
+
   ngOnInit() {
 
+    
     this.infoGeneral = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       prenom: ['', [Validators.required, Validators.minLength(2)]],
        nom: ['', [Validators.required, Validators.minLength(2)]],
        specialite: ['', [Validators.required, Validators.minLength(2)]],
-       etablissement: ['', [Validators.required, Validators.minLength(2)]],
-       reserv: []
-
-
-    });
+       etablissement: ['', [Validators.required, Validators.minLength(2)]],  });
   }
-  async register() {
-    // const loading = await this.loadingController.create();
-    // await loading.present();
-    // const user = await this.authService.register(this.infoGeneral.value);
-    // await loading.dismiss();
-
-    // if (user) {     
-    //   this.router.navigateByUrl('/home', { replaceUrl: true });
-    // } else {
-    //   this.showAlert('l\'inscription a été échoué', 'Veuillez réssayer!');
-    // }
-
-   }
-
-
   async showAlert(header, message) {
     const alert = await this.alertController.create({
       header,
@@ -80,6 +93,10 @@ export class SignUpPage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
+  }
+  login(){
+    this.router.navigateByUrl('/sign-in', { replaceUrl: true });
+
   }
 
 }

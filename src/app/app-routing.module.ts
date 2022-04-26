@@ -1,50 +1,50 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import {
-  redirectUnauthorizedTo,
-  redirectLoggedInTo,
-  canActivate,
-} from '@angular/fire/auth-guard';
 
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['']);
-const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
-    ...canActivate(redirectUnauthorizedToLogin)
+    path: '',
+    redirectTo: '/home',
+    pathMatch: 'full'
   },
   {
-    path: '',
-    loadChildren: () => import('./sign-in/sign-in.module').then( m => m.SignInPageModule),
-    ...canActivate(redirectLoggedInToHome)
-
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
-  // {
-  //   path: 'sign-in',
-  //   loadChildren: () => import('./sign-in/sign-in.module').then( m => m.SignInPageModule)
-  // },
+  
+  
+  
+  
+  
+  {
+    path: 'details/:idFormation',
+    loadChildren: () => import('./details/details.module').then( m => m.DetailsPageModule)
+  },
+  {
+    path: 'sign-in',
+    loadChildren: () => import('./sign-in/sign-in.module').then( m => m.SignInPageModule)
+  },
   {
     path: 'sign-up',
     loadChildren: () => import('./sign-up/sign-up.module').then( m => m.SignUpPageModule)
   },
   {
-    path: '**',
-    redirectTo : '',
-    pathMatch : 'full',
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then( m => m.AdminPageModule)
   },
   {
-    path: 'modal',
-    loadChildren: () => import('./modal/modal.module').then( m => m.ModalPageModule)
+    path: 'reserved-formations',
+    loadChildren: () => import('./reserved-formations/reserved-formations.module').then( m => m.ReservedFormationsPageModule)
   },
   {
-    path: 'profil-component',
-    loadChildren: () => import('./profil-component/profil-component.module').then( m => m.ProfilComponentPageModule)
+    path: 'ajouter-formation',
+    loadChildren: () => import('./ajouter-formation/ajouter-formation.module').then( m => m.AjouterFormationPageModule)
   },
   {
-    path: 'login',
-    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
-  }
+    path: 'modifier-formation/:idFormation',
+    loadChildren: () => import('./modifier-formation/modifier-formation.module').then( m => m.ModifierFormationPageModule)
+  },
+  
 ];
 
 @NgModule({

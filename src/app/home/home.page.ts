@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
-import { AddNewTaskPage } from '../add-new-task/add-new-task.page';
-import { FireserviceService } from '../fireservice.service';
+import { AuthService } from '../service/auth.service';
+import { DataService } from '../service/data.service';
+import {  Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-home',
@@ -11,70 +11,68 @@ import { FireserviceService } from '../fireservice.service';
 })
 export class HomePage {
 
-  formationlist:any
-//   todoList = [{
-//     itemName: 'Coding',
-//     itemDueDate: '13-05-21',
-//     itemPriority: 'high',
-//     itemCategory: 'Work'
-//   },
-//   {
-//     itemName: 'Design',
-//     itemDueDate: '13-10-21',
-//     itemPriority: 'low',
-//     itemCategory: 'Personal'
-//   },
-//   {
-//     itemName: 'Spring',
-//     itemDueDate: '14-05-21',
-//     itemPriority: 'middle',
-//     itemCategory: 'Personal'
-//   }
-// ]
-
-  today: number = Date.now()
-
-
-
-  async addNewItem() {
-    const modal = await this.modalCtrl.create({
-      component: AddNewTaskPage,
-    })
-    modal.onDidDismiss().then(newTaskObj =>(
-     this.formationlist.push(newTaskObj.data)
-    ))
-    return await modal.present()
-  }
   
-  delete(index){
-    this.formationlist.splice(index, 1)
-    console.log(this.formationlist);
-  }
+  listFormations = [];
+ tableauFormations = [];
+
+
+
+
+ 
+
+
+  
+ 
  
   constructor(
-    public modalCtrl:ModalController,
-    public fireService:FireserviceService,
-    public router:Router) {
+    public dataService : DataService,
+    public authService: AuthService,
+    public router:Router,
+    public storage: Storage
+   ) {
     
-       this.fireService.getMarker().subscribe(res => {
-        this.formationlist = res.map(e => {
+       this.dataService.getFormations().subscribe(res => {
+        this. listFormations = res.map(e => {
         return {
           docid: e.payload.doc.id,
-          itemName: e.payload.doc.data()["itemName"],
-          itemCategory: e.payload.doc.data()["itemCategory"],
-          itemPriority: e.payload.doc.data()["itemPriority"],
-          itemDueDate: e.payload.doc.data()["itemDueDate"]
+          nom: e.payload.doc.data()["nom"],
+          date: e.payload.doc.data()["date"],
+          prix: e.payload.doc.data()["prix"],
+          description: e.payload.doc.data()["description"]
         }
         }) 
-        console.log(this.formationlist);
+        
 
       },(err:any) => {
         console.log(err)
       })
+
     
     }
 
-    showDetails(docid){
+    versPageDetails(docid){
       this.router.navigateByUrl('details/' + docid);
+    }
+   
+   mesCommandes(){
+    this.router.navigateByUrl('reserved-formations');
+
+   }
+     
+    reserve(data){ 
+      this.storage.get('idCurrentUser').then((val) => {
+        console.log(val);
+        console.log(data);
+     
+      this.dataService.reserver(data,val);
+      this.router.navigateByUrl('home');
+    });
+    }
+   
+    signOut(){
+      this.authService.signOut().then(()=>{
+        this.router.navigateByUrl('sign-in');
+
+      });
     }
 }
